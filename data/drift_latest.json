@@ -2,13 +2,16 @@
   "overall_drift": true,
   "threshold": 0.2,
   "features": {
-    "age": 0.23,
-    "hours_per_week": 0.27,
-    "education": 0.34,
-    "sex": 0.22,
-    "occupation": 0.18,
-    "race": 0.09,
-    "workclass": 0.11,
-    "native_country": 0.07
+    "avg_latency_ms": 0.33,
+    "support_tickets_30d": 0.28,
+    "discount_pct": 0.21,
+    "contract_type": 0.19,
+    "autopay": 0.18,
+    "plan_type": 0.12,
+    "monthly_usage_gb": 0.11,
+    "tenure_months": 0.09,
+    "add_on_count": 0.05,
+    "payment_failures_90d": 0.1,
+    "downtime_hours_30d": 0.29
   }
 }
