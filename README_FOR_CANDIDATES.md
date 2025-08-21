@@ -4,15 +4,21 @@
 
 ### **What we provide**
 
-* A starter repo skeleton.  
-* Data files: `adult_synth.csv` (main dataset), `adult_ref_sample.csv`, `adult_shifted_sample.csv`, `metrics_history.jsonl`, `drift_latest.json`.
+* A starter repo skeleton ([link](https://github.com/gabriel-caffaratti-at-job/zubale-ml-test)).  
+* Data files in `data/`: `customer_churn_synth.csv` (main dataset), `churn_ref_sample.csv`, `churn_shifted_sample.csv`, `metrics_history.jsonl`, `drift_latest.json`.
+
+### **Dataset schema (inputs only; target \= `churned`)**
+
+* Categorical: `plan_type {Basic,Standard,Pro}`, `contract_type {Monthly,Annual}`, `autopay {Yes,No}`, `is_promo_user {Yes,No}`  
+* Numeric: `add_on_count`, `tenure_months`, `monthly_usage_gb`, `avg_latency_ms`, `support_tickets_30d`, `discount_pct`, `payment_failures_90d`, `downtime_hours_30d`  
+* Target: `churned ∈ {0,1}`
 
 ### **Your deliverables**
 
 * Reproducible training script that saves model \+ metrics.  
 * FastAPI service with `/health` and `/predict`.  
 * Minimal drift check CLI.  
-* Agentic Monitor CLI (LLM-optional).  
+* Agentic Monitor CLI (LLM-optional; rules are fine).  
 * Basic tests, Dockerfile, CI skeleton, and a 1-page GCP design note.  
 * A 15 min video showing your work.
 
@@ -22,7 +28,7 @@
 
 ### **Part A — Train (core ML)**
 
-Implement `python -m src.train --data data/adult_synth.csv --outdir artifacts/` that:
+Implement `python -m src.train --data data/customer_churn_synth.csv --outdir artifacts/` that:
 
 * Splits train/val with fixed seed.  
 * Preprocesses (impute, encode categoricals, scale as needed).  
@@ -33,20 +39,6 @@ Implement `python -m src.train --data data/adult_synth.csv --outdir artifacts/` 
 
 **Acceptance:** ROC-AUC ≥ **0.83** on our split; artifacts saved.
 
-#### Addendum:
-
-***Fairness & Sensitive Features (required)***
-
-* Treat **`race`, `sex`, `native_country`, `marital_status`** as **sensitive**.  
-* **Do not use** them as model inputs. Keep them only to compute fairness metrics.  
-* After you train, report:  
-  * Overall ROC-AUC and by group for **sex** and **race**.  
-  * At decision threshold 0.5: TPR and FPR by group.  
-  * One of these two disparity metrics:   
-    * Demographic Parity Difference (|P(ŷ=1|group)−P(ŷ=1|ref)|)   
-    * Equal Opportunity Difference (|TPR\_group−TPR\_ref|).  
-* If any gap \> 0.10, add one sentence on mitigation you’d try (drop/transform features, threshold per group, reweighting, post-processing). No need to implement.
-
 ---
 
 ### **Part B — Serve (FastAPI)**
@@ -55,7 +47,7 @@ Implement `python -m src.train --data data/adult_synth.csv --outdir artifacts/` 
 
 * `GET /health` → `{"status":"ok"}`  
 * `POST /predict` → accepts a JSON list of rows (Pydantic schema), returns probabilities \+ class.  
-* Clear 400s for missing/invalid fields or unknown categories.
+* Return 400 with a helpful message for missing fields / unknown categories.
 
 ---
 
@@ -66,17 +58,17 @@ Implement `python -m src.train --data data/adult_synth.csv --outdir artifacts/` 
   * `tests/test_training.py` sanity-checks artifacts exist and ROC-AUC ≥ 0.83.  
   * `tests/test_inference.py` boots the API locally and checks `POST /predict` on 2 sample rows returns probs in \[0,1\].  
 * **Docker:** image that can train and serve.  
-* **CI (GitHub Actions):** install, run tests, build Docker on push.
+* **CI (GitHub Actions):** install, run tests, build Docker on push (skeleton is provided; fill TODOs).
 
 ---
 
 ### **Part D — Monitoring (drift mini-check)**
 
-`python -m src.drift --ref data/adult_ref_sample.csv --new data/adult_shifted_sample.csv`  
+`python -m src.drift --ref data/churn_ref_sample.csv --new data/churn_shifted_sample.csv`  
 Outputs `artifacts/drift_report.json` with PSI/KS per feature and:
 
 ```json
-{"threshold": 0.2, "overall_drift": true|false, "features": {"age": 0.23, ...}}
+{"threshold": 0.2, "overall_drift": true|false, "features": {"avg_latency_ms": 0.31, ...}}
 ```
 
 **Part E — Agentic Monitor (LLM-optional)**
@@ -126,16 +118,28 @@ rationale: >
 
 ## **Constraints**
 
-* No internet required for training/eval.  
+* Offline friendly (no internet required to train/eval).  
 * Keep secrets out of code/CI.  
 * Deterministic seeds.
 
 ## **Submission**
 
 * GitHub repo link \+ brief README.  
-* Commands to reproduce:  
-  * `python -m src.train --data data/adult_synth.csv --outdir artifacts/`  
-  * `uvicorn src.app:app --port 8000`  
-  * `python -m src.drift --ref data/adult_ref_sample.csv --new data/adult_shifted_sample.csv`  
-  * `python -m src.agent_monitor --metrics data/metrics_history.jsonl --drift data/drift_latest.json --out artifacts/agent_plan.yaml`  
-  * `pytest -q`
+* Include commands to reproduce in the README:
+
+```
+# Train
+python -m src.train --data data/customer_churn_synth.csv --outdir artifacts/
+
+# Serve
+uvicorn src.app:app --port 8000
+
+# Drift
+python -m src.drift --ref data/churn_ref_sample.csv --new data/churn_shifted_sample.csv
+
+# Agent Monitor
+python -m src.agent_monitor --metrics data/metrics_history.jsonl --drift data/drift_latest.json --out artifacts/agent_plan.yaml
+
+# Tests
+pytest -q
+```
