@@ -22,6 +22,5 @@ jobs:
           pytest -q tests/
 
       - name: Build Docker image
-        run: |
-          docker build -t churn_app .
+        run: docker build -t churn_app -f docker/Dockerfile .
 
