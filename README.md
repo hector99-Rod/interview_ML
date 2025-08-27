@@ -1,3 +1,3 @@
 # Mini-Prod ML Challenge (Starter)
 
-See the Google Doc for full candidate brief.
+Héctor Rodrigo project, 2025-27-08
