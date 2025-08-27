@@ -1,0 +1,51 @@
+# Crear/verificar .gitignore
+@"
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Artifacts (opcional - depende si quieres commitearlos)
+# artifacts/
+# !artifacts/.gitkeep
+
+# Docker
+Dockerfile
+docker-compose.yml
+"@ | Out-File -Encoding utf8 .gitignore

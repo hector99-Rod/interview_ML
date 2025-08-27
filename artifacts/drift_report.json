@@ -1,0 +1,19 @@
+{
+  "threshold": 0.2,
+  "overall_drift": true,
+  "features": {
+    "plan_type": 0.019,
+    "contract_type": 0.045,
+    "autopay": 0.165,
+    "is_promo_user": 0.009,
+    "add_on_count": 0.006,
+    "tenure_months": 0.02,
+    "monthly_usage_gb": 0.011,
+    "avg_latency_ms": 0.322,
+    "support_tickets_30d": 0.122,
+    "discount_pct": 0.121,
+    "payment_failures_90d": 0.001,
+    "downtime_hours_30d": 0.301,
+    "churned": 0.0
+  }
+}

@@ -1,0 +1,6 @@
+actions:
+- raise_thresholds
+findings:
+- latency_p95_ms: 474.0
+rationale: p95 latency > 400ms for two windows; overall data drift detected
+status: warn
