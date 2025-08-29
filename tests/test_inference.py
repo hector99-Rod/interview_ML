@@ -19,11 +19,11 @@ def start_server():
     import os
     import sys
 
-    # Directorio raíz del proyecto (donde está la carpeta src)
+    # Principal Directory
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     os.chdir(project_root)
 
-    # Agregar carpeta src al sys.path para que se puedan importar módulos
+    # Add src to path
     src_dir = os.path.join(project_root, 'src')
     if src_dir not in sys.path:
         sys.path.insert(0, src_dir)

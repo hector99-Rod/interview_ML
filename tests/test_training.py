@@ -4,7 +4,7 @@ import os
 import sys
 import json
 
-# Agrega la carpeta raíz del proyecto al sys.path para que 'src' sea importable
+# Import src files
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if root_path not in sys.path:
     sys.path.insert(0, root_path)
@@ -16,7 +16,7 @@ def test_training_artifacts_exist():
     data_path = "data/customer_churn_synth.csv"
     outdir = "artifacts"
 
-    # Ejecuta el entrenamiento (esto debería guardar los artefactos en outdir)
+    # Saves artifacts
     roc_auc = train_model(data_path, outdir)
 
     # Verifica existencia de artefactos requeridos
@@ -25,17 +25,13 @@ def test_training_artifacts_exist():
     assert os.path.exists(os.path.join(outdir, "metrics.json"))
     assert os.path.exists(os.path.join(outdir, "feature_importances.csv"))
 
-    # Verifica que el ROC-AUC sea ≥ 0.83
-    assert roc_auc >= 0.83, f"ROC-AUC too low: {roc_auc}"
 
     with open(os.path.join(outdir, 'metrics.json')) as f:
         metrics = json.load(f)
 
-    # Verifica que esté val_metrics y que contenga roc_auc
     assert "val_metrics" in metrics, "Missing 'val_metrics' in metrics.json"
     assert "roc_auc" in metrics["val_metrics"], "ROC-AUC missing in val_metrics"
 
-    # Verifica el valor
     roc_auc = metrics["val_metrics"]["roc_auc"]
     assert roc_auc >= 0.83, f"ROC-AUC {roc_auc} is below required threshold 0.83"
 

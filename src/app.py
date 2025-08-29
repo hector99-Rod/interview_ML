@@ -48,12 +48,12 @@ async def predict(request: PredictionRequest):
     try:
         data = [item.dict() for item in request.data]
         df = pd.DataFrame(data)
-        X_processed = preprocessor.transform(df)  # Puede lanzar error para categorías desconocidas
+        X_processed = preprocessor.transform(df)  # Unknow categories
         probs = model.predict_proba(X_processed)[:, 1]
         predictions = [{"churn_probability": float(p), "churned": bool(p >= 0.5)} for p in probs]
         return PredictionResponse(predictions=predictions)
     except ValueError as ve:
-        # Categorías desconocidas u otros errores en preprocesamiento
+        # Unknow categories
         raise HTTPException(status_code=400, detail=f"Preprocessing error: {ve}")
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error processing request: {e}")
