@@ -84,13 +84,6 @@ def main():
     findings = analyze_metrics(metrics_df)
     plan = generate_plan(findings, drift_report)
 
-    # Aquí puedes integrar un LLM para enriquecer 'plan["rationale"]' o generar recomendaciones
-    # Ejemplo (pseudocódigo):
-    # from openai import OpenAI
-    # client = OpenAI()
-    # prompt = f"Analyze these findings: {findings} with drift {drift_report} and generate action plan rationale"
-    # plan["rationale"] = client.chat.completions.create(model="gpt-4", messages=[{"role":"user", "content": prompt}]).choices[0].message.content
-
     with open(args.out, 'w') as f:
         yaml.dump(plan, f)
 
