@@ -1,7 +1,7 @@
 scikit-learn
 pandas
 numpy
-xgboost==3.0.4
+xgboost
 lightgbm
 fastapi
 uvicorn
